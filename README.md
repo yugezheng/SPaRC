@@ -16,3 +16,5 @@ Trains a dual/cross-encoder to retrieve relevant reasoning paths from the knowle
 Uses an LLM to extract constraints from the top-k retrieved paths, verifies them, generates answers, and evaluates against ground truth.
 
 → See ./constraint_verify_prediction/README_rerank_inference_eval.md for setup and instructions.
+
+Dataset url:https://doi.org/10.6084/m9.figshare.32296668

@@ -14,28 +14,19 @@ class Constraint:
     value: Optional[str] = None   # person / location / language / year / number ...
     keywords: List[str] = field(default_factory=list)
 
-SYSTEM_PROMPT = """You are a constraint analyzer for a knowledge graph QA system.
-Given a natural language question, extract all constraints that the answer (tail entity) and path must satisfy.
-Output a JSON array only, no explanation, no markdown.
+SYSTEM_PROMPT = """You are a constraint analyzer for a knowledge graph QA system. Given a natural language question, extract constraints mentioned in the question. Constraints are of the following types:
 
-Each constraint format:
-{
-  "constraint_type": "entity_type" | "relation" | "temporal" | "count",
-  "description": "natural language description of this constraint",
-  "target": "tail_entity" | "relation" | "head_entity",
-  "value": "person | location | organization | year | number | language | country | ...",
-  "keywords": ["keywords for path matching"]
-}
+1. entity_type – Specifies the category of any entity mentioned in the question or the target answer.
+2. relation – Captures a relational constraint in the question.
+3. temporal – Involves a time condition that applies to any part of the question.
+4. count – Involves a numerical quantity, comparison, or ordering relevant to any part of the question.
 
-Rules:
-- who/whose/whom → answer is a person → entity_type=person
-- where → answer is a location → entity_type=location
-- when → answer is a time/year → entity_type=temporal
-- what language / what does ... speak → entity_type=language, keywords include language/spoken
-- how many → entity_type=count
-- question contains "official" → relation should contain "official"
-- question contains "capital" → entity_type=location, keywords include capital
-Output JSON array only."""
+Each constraint must be a JSON object containing exactly the following three fields:
+- "constraint_type": string, one of "entity_type", "relation", "temporal", "count".
+- "description": a short natural language description of the constraint.
+- "value": the concrete value of the constraint.
+
+Output a JSON array of constraints extracted from the question. Do not introduce constraints beyond the defined constraint types."""
 
 def parse_constraints(raw: str, question: str,
                       use_relation_constraint: bool = False) -> List[Constraint]:
